@@ -1,0 +1,57 @@
+# Use an official PHP runtime as a parent image
+FROM php:8.2-fpm
+
+# Set the working directory in the container
+WORKDIR /var/www/html
+
+# Update and install required packages
+RUN apt-get update -y \
+    && apt-get install -y unzip libpq-dev libcurl4-gnutls-dev \
+    && docker-php-ext-install pdo pdo_mysql bcmath
+
+# Install Node.js 20.x and npm
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Copy composer.lock and composer.json
+COPY composer.lock composer.json ./
+
+# Install PHP dependencies
+RUN composer install --no-scripts --no-autoloader --no-dev
+
+# Copy the rest of the application
+COPY . .
+
+# If .env file does not exist, create it
+RUN if [ ! -f ".env" ]; then cp .env.example .env; fi
+
+# Install Node.js dependencies and build assets
+RUN if [ ! -d "node_modules" ]; then npm install && npm run build; fi
+
+# Install PHP dependencies
+RUN composer install --no-scripts --no-autoloader --no-dev
+
+# Generate optimized autoload files
+RUN composer dump-autoload --optimize
+
+# Run migrations and other Laravel commands
+RUN php artisan migrate \
+    && php artisan key:generate \
+    && php artisan cache:clear \
+    && php artisan config:clear \
+    && php artisan route:clear
+
+# Change the ownership of the working directory to www-data
+RUN chown -R www-data:www-data /var/www/html
+
+# Expose port 9000 and start php-fpm server
+EXPOSE 9000
+
+# Start php-fpm
+CMD ["php-fpm"]

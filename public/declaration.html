@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Embeddable Widget</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 20px;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                background-color: #fff;
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+                margin-bottom: 20px;
+            }
+
+            table thead th {
+                background-color: #060455;
+                color: white;
+                font-weight: normal;
+                padding: 10px;
+                text-align: left;
+            }
+
+            table tbody td {
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+            }
+
+            table tbody tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="widget-container">
+            <table id="apiDataTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Provider</th>
+                        <th>Category</th>
+                        <th>Expiry</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            const apiURL =
+                "https://consentprotect.com/api/cookies/client/0574e7f7-6410-4890-a774-011b92a28525";
+
+            async function fetchAndPopulateTable() {
+                try {
+                    const response = await fetch(apiURL);
+                    const data = await response.json();
+                    populateTable(data);
+                } catch (error) {
+                    console.error("Failed to fetch data: ", error);
+                }
+            }
+
+            function populateTable(data) {
+                const tableBody = document
+                    .getElementById("apiDataTable")
+                    .getElementsByTagName("tbody")[0];
+                data.forEach((item) => {
+                    const row = tableBody.insertRow();
+                    const columns = ["name", "provider", "category", "expiry"]; // Columns to display
+                    columns.forEach((column) => {
+                        const cell = row.insertCell();
+                        cell.textContent = item[column];
+                    });
+                });
+            }
+
+            fetchAndPopulateTable();
+        </script>
+    </body>
+</html>
