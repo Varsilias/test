@@ -7,7 +7,7 @@ WORKDIR /var/www/html
 # Update and install required packages
 RUN apt-get update -y \
     && apt-get install -y unzip libpq-dev libcurl4-gnutls-dev \
-    && docker-php-ext-install pdo pdo_mysql bcmath
+    && docker-php-ext-install pdo pdo_mysql bcmath sockets
 
 # Install Node.js 20.x and npm
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
