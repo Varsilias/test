@@ -50,8 +50,8 @@ RUN php artisan migrate \
 # Change the ownership of the working directory to www-data
 RUN chown -R www-data:www-data /var/www/html
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
+# Expose port 10000 and start php-fpm server
+EXPOSE 10000
 
 # Start php-fpm
 CMD ["php-fpm"]
