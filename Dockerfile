@@ -1,16 +1,5 @@
 FROM richarvey/nginx-php-fpm:3.1.6
 
-# Update and install required packages
-RUN apk update && \
-    apk add --no-cache \
-        libpq-dev \
-        curl \
-        unzip \
-        php8-pdo \
-        php8-pdo_mysql \
-        php8-bcmath \
-        php8-sockets
-
 COPY . .
 
 # Image config
