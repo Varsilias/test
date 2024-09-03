@@ -1,5 +1,10 @@
 FROM richarvey/nginx-php-fpm:3.1.6
 
+# Update and install required packages
+RUN apt-get update -y \
+    && apt-get install -y unzip libpq-dev libcurl4-gnutls-dev \
+    && docker-php-ext-install pdo pdo_mysql bcmath sockets
+
 COPY . .
 
 # Image config
