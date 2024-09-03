@@ -1,9 +1,15 @@
 FROM richarvey/nginx-php-fpm:3.1.6
 
 # Update and install required packages
-RUN apt-get update -y \
-    && apt-get install -y unzip libpq-dev libcurl4-gnutls-dev \
-    && docker-php-ext-install pdo pdo_mysql bcmath sockets
+RUN apk update && \
+    apk add --no-cache \
+        libpq-dev \
+        curl \
+        unzip \
+        php8-pdo \
+        php8-pdo_mysql \
+        php8-bcmath \
+        php8-sockets
 
 COPY . .
 
