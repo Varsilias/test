@@ -53,5 +53,7 @@ RUN chown -R www-data:www-data /var/www/html
 # Expose port 8000 and start php-fpm server
 EXPOSE 8000
 
+ENTRYPOINT ["/var/www/html/entrypoint.sh"]
+
 # Start php-fpm
 CMD ["php-fpm"]
